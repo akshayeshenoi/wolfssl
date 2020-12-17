@@ -150,7 +150,8 @@ where 0 <= L < 2^64.
 
 
 
-#if defined(USE_INTEL_SPEEDUP)
+// we undefine this because of those weird assembly errors
+#if !defined(USE_INTEL_SPEEDUP)
     #if defined(__GNUC__) && ((__GNUC__ < 4) || \
                               (__GNUC__ == 4 && __GNUC_MINOR__ <= 8))
         #undef  NO_AVX2_SUPPORT

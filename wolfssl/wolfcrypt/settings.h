@@ -38,6 +38,11 @@
 #include <wolfssl/options.h>
 #endif
 
+/* manually adding below settings to enable RDRAND */
+#define HAVE_INTEL_RDSEED
+#define HAVE_INTEL_RDRAND
+#define USE_INTEL_SPEEDUP
+
 /* Uncomment next line if using IPHONE */
 /* #define IPHONE */
 
