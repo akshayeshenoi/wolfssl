@@ -95,8 +95,8 @@ Wolfssl_C_Files :=$(WOLFSSL_ROOT)/wolfcrypt/src/aes.c\
 					$(WOLFSSL_ROOT)/wolfcrypt/src/wolfevent.c\
 
 Wolfssl_Include_Paths := -I$(WOLFSSL_ROOT)/ \
-						 -I$(WOLFSSL_ROOT)/wolfcrypt/ \
-						 -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport
+						 -I$(WOLFSSL_ROOT)/wolfcrypt/
+						#  -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport
 
 ifeq ($(HAVE_WOLFSSL_TEST), 1)
 	Wolfssl_Include_Paths += -I$(WOLFSSL_ROOT)/wolfcrypt/test
@@ -115,10 +115,16 @@ ifeq ($(HAVE_WOLFSSL_SP), 1)
 endif
 
 
+CC := clang-8
+OE_CFLAGS=$(shell pkg-config oeenclave-clang --cflags)
+
 Flags_Just_For_C := -Wno-implicit-function-declaration -std=c11
 Common_C_Cpp_Flags := $(SGX_COMMON_CFLAGS) -nostdinc -fvisibility=hidden -fpie -fstack-protector $(Wolfssl_Include_Paths) -fno-builtin-printf -I.
-Wolfssl_C_Flags := $(Flags_Just_For_C) $(Common_C_Cpp_Flags) $(Wolfssl_C_Extra_Flags)
+# Wolfssl_C_Flags := $(Flags_Just_For_C) $(Common_C_Cpp_Flags) $(Wolfssl_C_Extra_Flags)
 
+Wolfssl_C_Flags := $(OE_CFLAGS) $(Wolfssl_Include_Paths)
+
+# not sure if this line has any purpose since we're not linking here
 Wolfssl_Link_Flags := $(SGX_COMMON_CFLAGS) -Wl,--no-undefined -nostdlib -nodefaultlibs -nostartfiles -L$(SGX_LIBRARY_PATH) \
 	-Wl,--whole-archive -l$(Trts_Library_Name) -Wl,--no-whole-archive \
 	-Wl,--start-group -lsgx_tstdc -lsgx_tstdcxx -l$(Crypto_Library_Name) -l$(Service_Library_Name) -Wl,--end-group \
