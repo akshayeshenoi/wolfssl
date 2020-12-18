@@ -121,7 +121,8 @@ int wc_RNG_GenerateByte(WC_RNG* rng, byte* b)
 #endif
 
 #if defined(WOLFSSL_SGX)
-    #include <sgx_trts.h>
+    // we aren't using the intel sdk
+    // #include <sgx_trts.h>
 #elif defined(USE_WINDOWS_API)
     #ifndef _WIN32_WINNT
         #define _WIN32_WINNT 0x0400
@@ -1600,15 +1601,18 @@ static int wc_GenerateRand_IntelRD(OS_Seed* os, byte* output, word32 sz)
 
 int wc_GenerateSeed(OS_Seed* os, byte* output, word32 sz)
 {
-    int ret = !SGX_SUCCESS;
-	int i, read_max = 10;
+    // we don't use this (we're using the RDRAND feature) 
+    // leaving so that the compiler doesn't protest
+    return 1;
+    // int ret = !SGX_SUCCESS;
+	// int i, read_max = 10;
 
-	for (i = 0; i < read_max && ret != SGX_SUCCESS; i++) {
-		ret = sgx_read_rand(output, sz);
-	}
+	// for (i = 0; i < read_max && ret != SGX_SUCCESS; i++) {
+	// 	ret = sgx_read_rand(output, sz);
+	// }
 
-	(void)os;
-	return (ret == SGX_SUCCESS) ? 0 : 1;
+	// (void)os;
+	// return (ret == SGX_SUCCESS) ? 0 : 1;
 }
 
 #elif defined(USE_WINDOWS_API)
